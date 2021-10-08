@@ -1,14 +1,18 @@
 package info.mvc.experience.utility;
 
+import info.mvc.experience.model.CsvRecord;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -44,22 +48,46 @@ public class CsvParserSimple {
         //URL resource = CsvParserSimple.class.getClassLoader().getResource("csv/wikipedia.csv");
 
         // Loads file from resources folder
-        URL resource = CsvParserSimple.class.getClassLoader().getResource("csv/monitor.csv");
-        File file = Paths.get(resource.toURI()).toFile();
+//        URL resource = CsvParserSimple.class.getClassLoader().getResource("csv/monitor.csv");
+//        File file = Paths.get(resource.toURI()).toFile();
+//
+//        CsvParserSimple obj = new CsvParserSimple();
+//        List<String[]> result = obj.readFile(file, 1);
+//
+//        int listIndex = 0;
+//        for (String[] arrays : result) {
+//            System.out.println("\nString[" + listIndex++ + "] : " + Arrays.toString(arrays));
+//
+//            int index = 0;
+//            for (String array : arrays) {
+//                System.out.println(index++ + " : " + array);
+//            }
+//
+//        }
 
-        CsvParserSimple obj = new CsvParserSimple();
-        List<String[]> result = obj.readFile(file, 1);
+//        MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
+//        multiValueMap.add("A", "aStr");
+//        multiValueMap.add("A", "aAStr");
+//        multiValueMap.add("B", "bStr");
+//        multiValueMap.add("B", "bBStr");
+//        multiValueMap.add("B", "bBBStr");
+//        System.out.println("multiValueMap="+multiValueMap);
+//
+//
+//        String[] strArr = {"A","A","B","B","B"};
+//        List<String> stringList = Arrays.asList(strArr);
+//
+//        Map<String, List<String>> ordinaryMap = stringList
+//                .stream()
+//                .collect(Collectors.groupingBy(s -> s.toString(), Collectors.toList()));
+//
+//        System.out.println("ordinaryMap="+ordinaryMap);
+//
+//        MultiValueMap<String, String> stringStringMultiValueMap = CollectionUtils.toMultiValueMap(ordinaryMap);
+//
+//        System.out.println("stringStringMultiValueMap="+stringStringMultiValueMap);
 
-        int listIndex = 0;
-        for (String[] arrays : result) {
-            System.out.println("\nString[" + listIndex++ + "] : " + Arrays.toString(arrays));
-
-            int index = 0;
-            for (String array : arrays) {
-                System.out.println(index++ + " : " + array);
-            }
-
-        }
+        //multiValueMap.computeIfPresent()
 
     }
     ////////////////////////////////////
