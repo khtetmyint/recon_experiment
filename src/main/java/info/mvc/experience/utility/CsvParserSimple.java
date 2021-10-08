@@ -1,9 +1,10 @@
 package info.mvc.experience.utility;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +62,49 @@ public class CsvParserSimple {
         }
 
     }
+    ////////////////////////////////////
+    public List<String[]> readAsMultipartFile(MultipartFile csvFile) throws Exception {
+        return readAsMultipartFile(csvFile, 0);
+    }
+
+    public List<String[]> readAsMultipartFile(MultipartFile csvFile, int skipLine) throws Exception {
+        InputStream inputStream = csvFile.getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        List<String[]> result = new ArrayList<>();
+        int indexLine = 1;
+
+        try (BufferedReader br = new BufferedReader(inputStreamReader)) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+
+                if (indexLine++ <= skipLine) {
+                    continue;
+                }
+
+                String[] csvLineInArray = parseLine(line);
+
+                if (isMultiLine) {
+                    pendingFieldLine = joinArrays(pendingFieldLine, csvLineInArray);
+                } else {
+
+                    if (pendingFieldLine != null && pendingFieldLine.length > 0) {
+                        // joins all fields and add to list
+                        result.add(joinArrays(pendingFieldLine, csvLineInArray));
+                        pendingFieldLine = new String[]{};
+                    } else {
+                        // if dun want to support multiline, only this line is required.
+                        result.add(csvLineInArray);
+                    }
+
+                }
+
+            }
+        }
+
+        return result;
+    }
+    //////////////////////////////////////// end of Multipart file reading ///////////////////////////
 
     public List<String[]> readFile(File csvFile) throws Exception {
         return readFile(csvFile, 0);
