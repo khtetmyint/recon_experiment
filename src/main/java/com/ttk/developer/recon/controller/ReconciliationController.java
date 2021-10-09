@@ -37,10 +37,13 @@ public class ReconciliationController {
 
     @PostMapping("/")
     public String processReconcile(@RequestParam(value = "file1") MultipartFile file1,
-                                   @RequestParam(value = "file2") MultipartFile file2) throws Exception {
+                                   @RequestParam(value = "file2") MultipartFile file2,
+                                   Model model) throws Exception {
         logger.info("Upload Csv method: File1 = {}", file1.getOriginalFilename());
         logger.info("Upload Csv method: File2 = {}", file2.getOriginalFilename());
 
+        model.addAttribute("file_one_name", file1.getOriginalFilename());
+        model.addAttribute("file_two_name", file2.getOriginalFilename());
 
 //        if (file.isEmpty()) {
 //            model.addAttribute("message", "Please select a CSV file to upload.");
@@ -67,7 +70,9 @@ public class ReconciliationController {
 
 
 
-        return "redirect:/";
+//        return "redirect:/";
+        return "result";
+
     }
 
     @GetMapping("/result")

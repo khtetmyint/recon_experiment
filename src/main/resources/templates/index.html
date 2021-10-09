@@ -3,13 +3,13 @@
 <head>
 
     <link rel="stylesheet" href="css/main.css" />
-
+    <!--Bootstrap 4-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Technical Project| Transaction Reconciliation</title>
 
-    <!--Bootstrap 4-->
-<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">-->
+
 </head>
 <body>
 <div class="container">
@@ -17,18 +17,19 @@
         <p >Specify files to compare:</p>
     </div>
     <fieldset>
-        <form th:method="POST" action="/" enctype="multipart/form-data" >
-            <div class="file-upload">
-                <label th:for="file1">Select a CSV file 1</label>
-                <input type="file" name="file1" id="file1" accept=".csv">
-            </div>
-            <div class="file-upload">
-                <label th:for="file2">Select a CSV file 2</label>
-                <input type="file" name="file2" id="file2" accept=".csv">
-            </div>
+        <form th:method="POST" th:action="@{/}" enctype="multipart/form-data" >
+            <div >
+                <div class="file-upload">
+                    <label th:for="file1">Select a CSV file 1</label>
+                    <input type="file" name="file1" id="file1" accept=".csv" required>
+                </div>
+                <div class="file-upload">
+                    <label th:for="file2">Select a CSV file 2</label>
+                    <input type="file" name="file2" id="file2" accept=".csv" required>
+                </div>
 
-            <button th:type="submit" >Compare</button>
-
+            <button class="btn btn-info btn-sm" th:type="submit" >Compare</button>
+            </div>
         </form>
     </fieldset>
 </div>

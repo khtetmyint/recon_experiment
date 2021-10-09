@@ -18,14 +18,21 @@ public class ReconExperimentApplication {
 
 //        logger.info("{}, {}",configurableApplicationContext.getId(),
 //                configurableApplicationContext.getDisplayName());
-//        https://mkyong.com/spring-boot/spring-boot-slf4j-logging-example/
+
 
 //        https://mkyong.com/java/how-to-read-and-parse-csv-file-in-java/
 
         // uploading and parsing
 //        https://attacomsian.com/blog/spring-boot-upload-parse-csv-file
 
+////////////////////////////////////////////////////////////////////////////////////
+        // upload file , controller ref:
+        // https://spring.io/guides/gs/uploading-files/
+        // exception handling ref:
+        // https://www.bezkoder.com/spring-boot-upload-csv-file/
 
+        // ...
+        // https://spring.io/guides/gs/handling-form-submission/
 
 //        String fileName = "csv/monitor.csv";
 //        InputStream inputStreamResource = MvcexperienceApplication.class.getClassLoader().
