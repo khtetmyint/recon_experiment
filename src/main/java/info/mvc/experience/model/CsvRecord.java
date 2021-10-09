@@ -54,14 +54,14 @@ public class CsvRecord {
 
     ///////////////////////////
 
-    public void getDataByHeader(){
+    private void getDataByHeader(){
         for (String headerKey : this.headerMap.keySet()) {
             final Integer integer = this.headerMap.get(headerKey);
             System.out.println("Row:"+this.rowNumber+":"+headerKey +"="+this.dataValues.get(integer));
         }
     }
 
-    public Transaction convertToTransaction(){
+    private Transaction convertToTransaction(){
         Map valuesHolder = new LinkedHashMap();
         for (String headerKey : this.headerMap.keySet()) {
             final Integer integer = this.headerMap.get(headerKey);
