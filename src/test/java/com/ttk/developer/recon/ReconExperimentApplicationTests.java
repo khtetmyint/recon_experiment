@@ -1,10 +1,10 @@
-package info.mvc.experience;
+package com.ttk.developer.recon;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MvcexperienceApplicationTests {
+class ReconExperimentApplicationTests {
 
     @Test
     void contextLoads() {

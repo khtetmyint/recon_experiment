@@ -1,3 +1,21 @@
-h1{
-    color:#0000FF;
+
+.container {
+    background-color: #e1ebf6;
+}
+
+.section-header {
+    width: 100%;
+    text-align: left;
+    margin: 0 auto;
+    padding: 1.5em 0em;
+    font-size: 15pt;
+    font-weight: bold;
+}
+
+.file-upload {
+    background: #e1ebd6;
+    padding: 1.25rem 1.25rem;
+    min-width: 50%;
+    flex-grow: 0;
+    text-align: left;
 }

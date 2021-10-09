@@ -1,4 +1,4 @@
-package info.mvc.experience.model;
+package com.ttk.developer.recon.model;
 
 import java.util.List;
 

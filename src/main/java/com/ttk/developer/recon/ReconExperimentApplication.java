@@ -1,4 +1,4 @@
-package info.mvc.experience;
+package com.ttk.developer.recon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,14 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class MvcexperienceApplication {
+public class ReconExperimentApplication {
 
-    private static final Logger logger = LoggerFactory.getLogger(MvcexperienceApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReconExperimentApplication.class);
 
     private static final String COMMA_DELIMITER = ",";
     public static void main(String[] args) {
 //        ApplicationContext configurableApplicationContext=
-        SpringApplication.run(MvcexperienceApplication.class, args);
+        SpringApplication.run(ReconExperimentApplication.class, args);
 
 //        logger.info("{}, {}",configurableApplicationContext.getId(),
 //                configurableApplicationContext.getDisplayName());

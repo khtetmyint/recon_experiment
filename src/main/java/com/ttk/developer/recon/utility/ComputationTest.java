@@ -1,7 +1,8 @@
-package info.mvc.experience.utility;
+package com.ttk.developer.recon.utility;
 
-import info.mvc.experience.model.CompareResult;
-import info.mvc.experience.model.CsvRecord;
+import com.ttk.developer.recon.model.CompareResult;
+import com.ttk.developer.recon.model.CsvRecord;
+import com.ttk.developer.recon.model.ReconResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,48 +20,32 @@ public class ComputationTest {
     static final String COMPARE_KEY = "TransactionID";
 
     public static void main(String[] args) throws Exception {
-        //TEST getResourceAsStream
-//        String fileName = "csv/monitor.csv";
-//        InputStream inputStreamResource = ComputationTest.class.getClassLoader().
-//                getResourceAsStream(fileName);
-//
-//        if (inputStreamResource == null)
-//            throw new IllegalArgumentException("file not found! " + fileName);
-//
-//        try (InputStreamReader streamReader =
-//                     new InputStreamReader(inputStreamResource, StandardCharsets.UTF_8);
-//             BufferedReader reader = new BufferedReader(streamReader)) {
-//
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                logger.info(line);
-//            }
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
-        final List<CsvRecord> fileOneCsvRecordList = convertToCsvRecordList(LOAD_CSV_FILENAME_ONE);
-        final List<CsvRecord> fileTwoCsvRecordList = convertToCsvRecordList(LOAD_CSV_FILENAME_TWO);
+        ReconResult reconResultFileOne = compareFileOneAgainstFileTwo(LOAD_CSV_FILENAME_ONE, LOAD_CSV_FILENAME_TWO, true);
+        ReconResult reconResultFileTwo = compareFileOneAgainstFileTwo(LOAD_CSV_FILENAME_TWO, LOAD_CSV_FILENAME_ONE, true);
+
+    }
+
+    static private ReconResult compareFileOneAgainstFileTwo(final String local_file_one, final String local_file_two, boolean isLocal) throws Exception {
+        final List<CsvRecord> fileOneCsvRecordList = convertToCsvRecordList(local_file_one);
+        final List<CsvRecord> fileTwoCsvRecordList = convertToCsvRecordList(local_file_two);
 
         final Map<String, List<CsvRecord>> fileOneRecordMap = getIntoRecordMap(fileOneCsvRecordList);
         final Map<String, List<CsvRecord>> fileTwoRecordMap = getIntoRecordMap(fileTwoCsvRecordList);
-        System.out.println("==================================File One - Checking Record Map=============");
+        logger.info("==================================Left Main File - Checking Record Map=============");
         int FILE_ONE_TOTAL_RECORD_COUNT = 0;
-        int FILE_TWO_TOTAL_RECORD_COUNT = 0;
 
         int FILE_ONE_MATCHED_COUNT = 0;
         int FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT = 0;
         int FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT = 0;
-        List<String> keyListNotFoundInFileTwo = new ArrayList<>();
-        
+        List<String> KEY_LIST_NOT_FOUND_IN_FILE_TWO = new ArrayList<>();
+
         List<String> nonUniqueKeyListfoundNotMatch = new ArrayList<>();
 
         FILE_ONE_TOTAL_RECORD_COUNT = fileOneCsvRecordList.size()-1;
 
-        FILE_TWO_TOTAL_RECORD_COUNT = fileTwoCsvRecordList.size()-1;
 
-        List<CompareResult> compareResultList = new ArrayList<>();
+        List<CompareResult> COMPARE_RESULT_LIST = new ArrayList<>();
         for (String key : fileOneRecordMap.keySet()) {
 
             if(fileTwoRecordMap.containsKey(key)){
@@ -89,7 +74,7 @@ public class ComputationTest {
                     /////
                     internalCompareResultList.forEach(internalCompare-> {
                         if( !internalCompare.isRecordMatch() )
-                            compareResultList.add(internalCompare);
+                            COMPARE_RESULT_LIST.add(internalCompare);
                     });
 
                     /////
@@ -97,14 +82,14 @@ public class ComputationTest {
 
 
             } else{
-                keyListNotFoundInFileTwo.add(key);
+                KEY_LIST_NOT_FOUND_IN_FILE_TWO.add(key);
                 FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT++;
-                ////////
+                //////// Setting Result for Not Found CsvRecord
                 Optional<CsvRecord> anyCsvRec = fileOneCsvRecordList
                         .stream()
                         .filter(csvRecord -> key.equalsIgnoreCase(csvRecord.getTransaction().get(COMPARE_KEY)))
                         .findAny();
-                logger.info("anyCsvRec={}",anyCsvRec.get().getTransaction());
+                //logger.info("anyCsvRec={}",anyCsvRec.get().getTransaction());
                 ////////
                 anyCsvRec.ifPresent(csvRecord -> {
                     CompareResult result = new CompareResult();
@@ -112,43 +97,29 @@ public class ComputationTest {
                     result.setRecordMatch(false);
                     result.setReason("Record Not Found in Another File");
                     result.setRowNumberInFileOne(String.valueOf(csvRecord.getRowNumber()));
-                    compareResultList.add(result);
+                    COMPARE_RESULT_LIST.add(result);
                 });
 
 
             }
         }
-        System.out.println("==================================File Two - Checking Record Map=============");
+        //System.out.println("==================================File Two - Checking Record Map=============");
 //        fileTwoRecordMap.forEach((key,listOfCsvRecord)->{
 //            logger.info("{}={}, CsvRecord Per Key={}",COMPARE_KEY, key, listOfCsvRecord.size());
 //        });
-//        List<String> keyListNotFoundInFileOne = new ArrayList<>();
-//        int FILE_TWO_NOT_FOUND_IN_FILE_ONE_COUNT = 0;
-//        for (String key : fileTwoRecordMap.keySet()) {
-//            if(fileOneRecordMap.containsKey(key)){
-//
-//            } else{
-//                keyListNotFoundInFileOne.add(key);
-//                FILE_TWO_NOT_FOUND_IN_FILE_ONE_COUNT++;
-//            }
-//
-//        }
-//        logger.info("\nFile Two key not found in File One ={}" +
-//                        "\nFILE_TWO_NOT_FOUND_IN_FILE_ONE_COUNT={}",
-//                keyListNotFoundInFileOne.toString(),
-//                FILE_TWO_NOT_FOUND_IN_FILE_ONE_COUNT);
-        System.out.println("===================================================================");
-        compareResultList.forEach(compare->logger.info("Unmatched Result={}",compare));
 
-        List<String> keyListFoundInFileTwoButNotMatch = nonUniqueKeyListfoundNotMatch
+
+
+        List<String> KEY_LIST_FOUND_IN_FILE_TWO_BUT_NOT_MATCH = nonUniqueKeyListfoundNotMatch
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
 
 
-        FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT = keyListFoundInFileTwoButNotMatch.size();
+        FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT = KEY_LIST_FOUND_IN_FILE_TWO_BUT_NOT_MATCH.size();
 
-        logger.info("=====File One======\nFILE_ONE TOTAL COUNT={} " +
+        logger.info("=====Compare Main File Against Another======" +
+                        "\nFILE_ONE TOTAL COUNT={} " +
                         "\nFILE_ONE MATCHED COUNT={} " +
                         "\nFILE_ONE NOT_FOUND_IN_FILE_TWO COUNT={} " +
                         "\nFILE_ONE FOUND_IN_FILE_TWO BUT UNMATCH_COUNT={}",
@@ -156,17 +127,35 @@ public class ComputationTest {
                 FILE_ONE_MATCHED_COUNT,
                 FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT,
                 FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT);
+        logger.info("===================================================================");
 
-        logger.info("\nKEY LIST FOUND BUT NOT MATCHED IN FILE TWO={} " +
-                "\nKEY LIST NOT FOUND IN FILE TWO={}",
-                keyListFoundInFileTwoButNotMatch.toString(),
-                keyListNotFoundInFileTwo.toString());
+        logger.info("\nKEY LIST FOUND BUT NOT MATCHED IN ANOTHER FILE TWO={} " +
+                        "\nKEY LIST NOT FOUND IN ANOTHER FILE TWO={}",
+                KEY_LIST_FOUND_IN_FILE_TWO_BUT_NOT_MATCH.toString(),
+                KEY_LIST_NOT_FOUND_IN_FILE_TWO.toString());
+        logger.info("===================================================================");
 
-        logger.warn("\nNon Unique, Found But Not Match Key List From File Two={}",nonUniqueKeyListfoundNotMatch.toString());
-        logger.warn("Unique Found But Not Match Key List={}",keyListFoundInFileTwoButNotMatch.toString());
-        //fileOneRecordMap.entrySet();
+        COMPARE_RESULT_LIST.forEach(compare->logger.info("Unmatched Result={}",compare));
+        //logger.warn("\nNon Unique, Found But Not Match Key List From File Two={}",nonUniqueKeyListfoundNotMatch.toString());
+        //logger.warn("\nUnique Found But Not Match Key List={}",keyListFoundInFileTwoButNotMatch.toString());
+        ReconResult reconResult = new ReconResult();
+        reconResult.setTotalRecords(FILE_ONE_TOTAL_RECORD_COUNT) ;
 
+        reconResult.setMatchedRecords(FILE_ONE_MATCHED_COUNT) ;
 
+        reconResult.setUnmatchedRecords(FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT + FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT) ;
+
+        reconResult.setNotFoundInAnotherFileCount(FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT) ;
+
+        reconResult.setFoundButNotMatchInAnotherFileCount(FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT) ;
+
+        reconResult.setKeyListNotFoundInFileTwo(KEY_LIST_NOT_FOUND_IN_FILE_TWO) ;
+
+        reconResult.setKeyListFoundInFileTwoButNotMatch(KEY_LIST_FOUND_IN_FILE_TWO_BUT_NOT_MATCH) ;
+
+        reconResult.setCompareResultList(COMPARE_RESULT_LIST) ;
+
+        return reconResult;
     }
 
     static private CompareResult compareTwoCsvRecords(CsvRecord one, CsvRecord two, String key){
@@ -206,14 +195,13 @@ public class ComputationTest {
 
         }
 //        if (resultsMap.containsValue(false)) return resultsMap;
-//
 //        resultsMap.put("AllMatch", String.valueOf(true));
         return result;
     }
 
     static private List<CsvRecord> convertToCsvRecordList(String localFilePath) throws Exception {
         //Testing with Local file
-        System.out.println("Receiving request to Load and Convert Filename="+localFilePath);
+        logger.info("Receiving request to Load and Convert Filename={}",localFilePath);
         File file = Paths.get(localFilePath).toFile();
         CsvParserSimple obj = new CsvParserSimple();
         //Read As Local file
@@ -242,9 +230,9 @@ public class ComputationTest {
             rowIndex++;
 
         }
-        System.out.println("===============================");
-        System.out.println("Total Records (-Headers)="+(csvRecordList.size()-1));
-        System.out.println("===============================");
+        logger.info("===============================");
+        logger.info("Total Records (-Headers)={}", (csvRecordList.size()-1));
+        logger.info("===============================");
 
         return csvRecordList;
     }
