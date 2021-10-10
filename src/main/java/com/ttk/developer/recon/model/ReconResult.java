@@ -16,7 +16,7 @@ public class ReconResult {
 
     /**
      * 3.
-     * {add No 4 and 5; to get unmatched count}
+     * Total Record - Matched Records = You got unmatched, simple as that.. or is it?
      */
     int unmatchedRecords;
 

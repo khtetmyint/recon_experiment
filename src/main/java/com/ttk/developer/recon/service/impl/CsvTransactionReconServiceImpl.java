@@ -34,7 +34,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
         try {
             ReconResult reconResultFileOne = compareFileOneAgainstFileTwo(file1, file2, false);
 
-            ReconResult reconResultFileTwo = compareFileOneAgainstFileTwo(file2, file1, true);
+            ReconResult reconResultFileTwo = compareFileOneAgainstFileTwo(file2, file1, false);
 
             ReconViewResult reconViewResult =  new ReconViewResult();
             reconViewResult.setComputeStatus(true);
@@ -65,6 +65,8 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
         int FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT = 0;
         List<String> KEY_LIST_NOT_FOUND_IN_FILE_TWO = new ArrayList<>();
 
+        List<String> nonUniqueKeyListMatch = new ArrayList<>();
+
         List<String> nonUniqueKeyListfoundNotMatch = new ArrayList<>();
 
         FILE_ONE_TOTAL_RECORD_COUNT = fileOneCsvRecordList.size()-1;
@@ -93,7 +95,8 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
                             nonUniqueKeyListfoundNotMatch.add(key);
 
                         } else {
-                            FILE_ONE_MATCHED_COUNT++;
+                            nonUniqueKeyListMatch.add(key);
+                            //FILE_ONE_MATCHED_COUNT++;
                         }
                     }
                     /////
@@ -137,7 +140,11 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
 //            logger.info("{}={}, CsvRecord Per Key={}",COMPARE_KEY, key, listOfCsvRecord.size());
 //        });
 
-
+        FILE_ONE_MATCHED_COUNT =
+                (int) nonUniqueKeyListMatch
+                        .stream()
+                        .distinct()
+                        .count();
 
         List<String> KEY_LIST_FOUND_IN_FILE_TWO_BUT_NOT_MATCH = nonUniqueKeyListfoundNotMatch
                 .stream()
@@ -172,7 +179,10 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
 
         reconResult.setMatchedRecords(FILE_ONE_MATCHED_COUNT) ;
 
-        reconResult.setUnmatchedRecords(FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT + FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT) ;
+        //reconResult.setUnmatchedRecords(FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT + FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT) ;
+//        logger.info("{} - {} UNMATCHED COUNT!!!==={}",FILE_ONE_TOTAL_RECORD_COUNT, FILE_ONE_MATCHED_COUNT,
+//                FILE_ONE_TOTAL_RECORD_COUNT - FILE_ONE_MATCHED_COUNT);
+        reconResult.setUnmatchedRecords(FILE_ONE_TOTAL_RECORD_COUNT - FILE_ONE_MATCHED_COUNT) ;
 
         reconResult.setNotFoundInAnotherFileCount(FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT) ;
 

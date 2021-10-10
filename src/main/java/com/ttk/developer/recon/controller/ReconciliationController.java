@@ -41,17 +41,6 @@ public class ReconciliationController {
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
     public String index(Model model) {
 
-//        List<User> users = new ArrayList<>();
-//        for (int i = 0; i < 5; i++) {
-//            User user = new User();
-//            user.setId(i);
-//            user.setName("Name_"+i);
-//            user.setEmail("Email_"+i+"@example.com");
-//            user.setCountryCode("Country_"+i);
-//            users.add(user);
-//        }
-//
-//        model.addAttribute("users", users);
 
 
         return "index"; // index.html
@@ -75,27 +64,28 @@ public class ReconciliationController {
         model.addAttribute("file_two_name", file2.getOriginalFilename());
         model.addAttribute("reconViewResult", reconViewResult);
         model.addAttribute("computeStatus", reconViewResult.isComputeStatus());
-
-
-        for (CompareResult compareResult : reconViewResult.getReconResultFileOne().getCompareResultList()) {
-            logger.info("In Loop ResultFileOne:{},{},{},{},{},{}",
-            compareResult.getMainRecord().getRowNumber(),
-            compareResult.getRowNumberInFileOne(),
-            compareResult.getCompareKey(),
-            compareResult.getReason(),
-            compareResult.getMainRecord().getTransaction().get("TransactionDate"),
-            compareResult.getMainRecord().getTransaction().get("TransactionAmount"));
-        }
-
-        for (CompareResult compareResult : reconViewResult.getReconResultFileTwo().getCompareResultList()) {
-            logger.info("In Loop ResultFileTwo:{},{},{},{},{},{}",
-                    compareResult.getMainRecord().getRowNumber(),
-                    compareResult.getRowNumberInFileOne(),
-                    compareResult.getCompareKey(),
-                    compareResult.getReason(),
-                    compareResult.getMainRecord().getTransaction().get("TransactionDate"),
-                    compareResult.getMainRecord().getTransaction().get("TransactionAmount"));
-        }
+            logger.info("1 unmatch={}, 2 unmatch={}",
+        reconViewResult.getReconResultFileOne().getUnmatchedRecords(),
+        reconViewResult.getReconResultFileTwo().getUnmatchedRecords());
+//        for (CompareResult compareResult : reconViewResult.getReconResultFileOne().getCompareResultList()) {
+//            logger.info("In Loop ResultFileOne:{},{},{},{},{},{}",
+//            compareResult.getMainRecord().getRowNumber(),
+//            compareResult.getRowNumberInFileOne(),
+//            compareResult.getCompareKey(),
+//            compareResult.getReason(),
+//            compareResult.getMainRecord().getTransaction().get("TransactionDate"),
+//            compareResult.getMainRecord().getTransaction().get("TransactionAmount"));
+//        }
+//
+//        for (CompareResult compareResult : reconViewResult.getReconResultFileTwo().getCompareResultList()) {
+//            logger.info("In Loop ResultFileTwo:{},{},{},{},{},{}",
+//                    compareResult.getMainRecord().getRowNumber(),
+//                    compareResult.getRowNumberInFileOne(),
+//                    compareResult.getCompareKey(),
+//                    compareResult.getReason(),
+//                    compareResult.getMainRecord().getTransaction().get("TransactionDate"),
+//                    compareResult.getMainRecord().getTransaction().get("TransactionAmount"));
+//        }
 //        if (file.isEmpty()) {
 //            model.addAttribute("message", "Please select a CSV file to upload.");
 //            model.addAttribute("status", false);
@@ -109,17 +99,7 @@ public class ReconciliationController {
 
 
 //        return "redirect:/";
-        List<User> users = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            User user = new User();
-            user.setId(i);
-            user.setName("Name_"+i);
-            user.setEmail("Email_"+i+"@example.com");
-            user.setCountryCode("Country_"+i);
-            users.add(user);
-        }
 
-        model.addAttribute("users", users);
 
         return "result";
 
