@@ -13,7 +13,39 @@ public class CompareResult {
     private String rowNumberInFileOne;
     private String rowNumberInFileTwo;
 
+    private CsvRecord mainRecord;
 
+
+    //////////////////////////////////////
+
+
+    public String getReason() {
+        return reason;
+    }
+
+    public List<String> getComparedHeader() {
+        return comparedHeader;
+    }
+
+    public List<String> getValueInFileOne() {
+        return valueInFileOne;
+    }
+
+    public List<String> getValueInFileTwo() {
+        return valueInFileTwo;
+    }
+
+    public String getRowNumberInFileOne() {
+        return rowNumberInFileOne;
+    }
+
+    public String getRowNumberInFileTwo() {
+        return rowNumberInFileTwo;
+    }
+
+    public CsvRecord getMainRecord() {
+        return mainRecord;
+    }
 
 
 
@@ -56,6 +88,12 @@ public class CompareResult {
     public void setCompareKey(String compareKey) {
         this.compareKey = compareKey;
     }
+
+    public void setMainRecord(CsvRecord mainRecord) {
+        this.mainRecord = mainRecord;
+    }
+
+
 
     @Override
     public String toString() {

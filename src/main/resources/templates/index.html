@@ -18,6 +18,7 @@
 <div class="container">
     <div class="section-header">
         <p >Specify files to compare:</p>
+<!--        <span th:text="${@environment.getProperty('welcome.message')}" />-->
     </div>
     <fieldset>
         <form th:method="POST" th:action="@{/}" enctype="multipart/form-data" >
@@ -37,6 +38,8 @@
     </fieldset>
 </div>
 
+<!-- comment below unnecessary testing lines -->
+<!--
 <div class="content">
     <button th:id="report-button" style="align-content: center;border-radius: 12px;" th:inline="text">
         <span>Unmatched Report</span>
@@ -44,9 +47,9 @@
     </button>
 </div>
 <div id="unmatched-report" style="display: none; opacity: 0">
-<!--    <div style="align-content: center">-->
-<!--        <p style="align-content: center">Unmatched Report Result</p>-->
-<!--    </div>-->
+&lt;!&ndash;    <div style="align-content: center">&ndash;&gt;
+&lt;!&ndash;        <p style="align-content: center">Unmatched Report Result</p>&ndash;&gt;
+&lt;!&ndash;    </div>&ndash;&gt;
 
     <div style="display: flex; justify-content: space-around">
         <div id="div-table-left">
@@ -112,5 +115,6 @@
     };
 
 </script>
+-->
 </body>
 </html>

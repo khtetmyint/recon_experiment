@@ -120,8 +120,12 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
                     CompareResult result = new CompareResult();
                     result.setCompareKey(key);
                     result.setRecordMatch(false);
+                    result.setMainRecord(csvRecord);
                     result.setReason("Record Not Found in Another File");
                     result.setRowNumberInFileOne(String.valueOf(csvRecord.getRowNumber()));
+                    result.setValueInFileTwo(Collections.emptyList());
+                    //Arrays.asList(new String[]{"A","B","C"})
+                    result.setComparedHeader(Collections.emptyList());
                     COMPARE_RESULT_LIST.add(result);
                 });
 
@@ -189,6 +193,9 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
         CompareResult result = new CompareResult();
         result.setCompareKey(key);
         result.setRecordMatch(true);
+
+        result.setMainRecord(one);
+
         for (String headerKey : one.getTransaction().keySet()) {
 
             String twoValue = two.getTransaction().get(headerKey);

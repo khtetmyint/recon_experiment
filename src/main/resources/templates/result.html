@@ -29,7 +29,7 @@
         <!--display View Results list-->
         <div style="display: flex; justify-content: space-around">
             <div id="summary-table-left">
-                <p>Csv File 1 : <th:block th:inline="text" th:text="${file_one_name}"></th:block></p>
+                <p>Csv File 1 Name: <th:block th:inline="text" th:text="${file_one_name}"></th:block></p>
                 <table  >
                     <tr>
                         <td><th:block th:inline="text" />Total Records:</td>
@@ -47,7 +47,7 @@
             </div>
 
             <div id="summary-table-right">
-                <p>Csv File 2 : <th:block th:inline="text" th:text="${file_two_name}"></th:block></p>
+                <p>Csv File 2 Name: <th:block th:inline="text" th:text="${file_two_name}"></th:block></p>
                 <table  >
                     <tr>
                         <td>Total Records:</td>
@@ -86,21 +86,29 @@
             <table  id="report-table-left">
                 <thead>
                 <tr>
+                    <th style="text-align: left; padding: 5px" colspan="7" th:text="'Csv File 1 Name: ' +${file_one_name}"></th>
+                </tr>
+                <tr>
                     <th scope="col" >#</th>
                     <th scope="col" >Date</th>
                     <th scope="col" >Reference</th>
                     <th scope="col" >Amount</th>
+                    <th scope="col" >Row No.</th>
+                    <th scope="col" >Reason</th>
                     <th scope="col" >Remarks</th>
 
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user, i : ${users}" form-group="true">
+                <tr th:each="file1, i : ${reconViewResult.getReconResultFileOne().getCompareResultList()}" form-group="true">
                     <th scope="row" th:text="${i.index + 1}"></th>
-                    <td th:text="${user.id}"></td>
-                    <td th:text="${user.name}"></td>
-                    <td th:text="${user.email}"></td>
-                    <td th:text="${user.countryCode}"></td>
+                    <td th:text="${file1.getMainRecord().getTransaction().get('TransactionDate')}"></td>
+                    <td th:text="${file1.getCompareKey()}"></td>
+                    <td th:text="${file1.getMainRecord().getTransaction().get('TransactionAmount')}"></td>
+                    <td th:text="${file1.getMainRecord().getRowNumber()}"></td>
+                    <td style="text-align: left" th:text="${file1.getReason()}"></td>
+                    <td style="text-align: left" th:utext="'Value in Other File: '+${file1.getValueInFileTwo()}+
+                    '<br /> Compared Header:'+${file1.getComparedHeader()}" ></td>
                 </tr>
                 </tbody>
             </table>
@@ -109,21 +117,31 @@
             <table  id="report-table-right">
                 <thead>
                 <tr>
+                    <th style="text-align: right; padding: 5px" colspan="7" th:text="'Csv File 2 Name: ' +${file_two_name}"></th>
+                </tr>
+                <tr>
                     <th scope="col" >#</th>
                     <th scope="col" >Date</th>
                     <th scope="col" >Reference</th>
                     <th scope="col" >Amount</th>
+                    <th scope="col" >Row No.</th>
+                    <th scope="col" >Reason</th>
                     <th scope="col" >Remarks</th>
 
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user, i : ${users}" form-group="true">
+                <tr th:each="file2, i : ${reconViewResult.getReconResultFileTwo().getCompareResultList()}" form-group="true">
                     <th scope="row" th:text="${i.index + 1}"></th>
-                    <td th:text="${user.id}"></td>
-                    <td th:text="${user.name}"></td>
-                    <td th:text="${user.email}"></td>
-                    <td th:text="${user.countryCode}"></td>
+                    <td th:text="${file2.getMainRecord().getTransaction().get('TransactionDate')}"></td>
+                    <td th:text="${file2.getCompareKey()}"></td>
+                    <td th:text="${file2.getMainRecord().getTransaction().get('TransactionAmount')}"></td>
+                    <td th:text="${file2.getMainRecord().getRowNumber()}"></td>
+                    <td style="text-align: left" th:text="${file2.getReason()}" ></td>
+                    <td style="text-align: left" th:utext="'Value in Other File: '+${file2.getValueInFileTwo()}+
+                    '<br /> Compared Header:'+${file2.getComparedHeader()}" ></td>
+
+
                 </tr>
                 </tbody>
 

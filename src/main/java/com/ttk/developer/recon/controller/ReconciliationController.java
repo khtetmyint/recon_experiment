@@ -1,5 +1,6 @@
 package com.ttk.developer.recon.controller;
 
+import com.ttk.developer.recon.model.CompareResult;
 import com.ttk.developer.recon.model.ReconViewResult;
 import com.ttk.developer.recon.model.User;
 import com.ttk.developer.recon.service.CsvTransactionReconService;
@@ -40,17 +41,17 @@ public class ReconciliationController {
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
     public String index(Model model) {
 
-        List<User> users = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            User user = new User();
-            user.setId(i);
-            user.setName("Name_"+i);
-            user.setEmail("Email_"+i+"@example.com");
-            user.setCountryCode("Country_"+i);
-            users.add(user);
-        }
-
-        model.addAttribute("users", users);
+//        List<User> users = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            User user = new User();
+//            user.setId(i);
+//            user.setName("Name_"+i);
+//            user.setEmail("Email_"+i+"@example.com");
+//            user.setCountryCode("Country_"+i);
+//            users.add(user);
+//        }
+//
+//        model.addAttribute("users", users);
 
 
         return "index"; // index.html
@@ -74,23 +75,31 @@ public class ReconciliationController {
         model.addAttribute("file_two_name", file2.getOriginalFilename());
         model.addAttribute("reconViewResult", reconViewResult);
         model.addAttribute("computeStatus", reconViewResult.isComputeStatus());
+
+
+        for (CompareResult compareResult : reconViewResult.getReconResultFileOne().getCompareResultList()) {
+            logger.info("In Loop ResultFileOne:{},{},{},{},{},{}",
+            compareResult.getMainRecord().getRowNumber(),
+            compareResult.getRowNumberInFileOne(),
+            compareResult.getCompareKey(),
+            compareResult.getReason(),
+            compareResult.getMainRecord().getTransaction().get("TransactionDate"),
+            compareResult.getMainRecord().getTransaction().get("TransactionAmount"));
+        }
+
+        for (CompareResult compareResult : reconViewResult.getReconResultFileTwo().getCompareResultList()) {
+            logger.info("In Loop ResultFileTwo:{},{},{},{},{},{}",
+                    compareResult.getMainRecord().getRowNumber(),
+                    compareResult.getRowNumberInFileOne(),
+                    compareResult.getCompareKey(),
+                    compareResult.getReason(),
+                    compareResult.getMainRecord().getTransaction().get("TransactionDate"),
+                    compareResult.getMainRecord().getTransaction().get("TransactionAmount"));
+        }
 //        if (file.isEmpty()) {
 //            model.addAttribute("message", "Please select a CSV file to upload.");
 //            model.addAttribute("status", false);
 //        } else {
-//            CsvParserSimple obj = new CsvParserSimple();
-//            List<String[]> result = obj.readAsMultipartFile(file,1);
-//
-//            int listIndex = 0;
-//            for (String[] arrays : result) {
-//                System.out.println("\nString[" + listIndex++ + "] : " + Arrays.toString(arrays));
-//
-//                int index = 0;
-//                for (String array : arrays) {
-//                    System.out.println(index++ + " : " + array);
-//                }
-//
-//            }
 //
 //
 //            model.addAttribute("message", "CSV file1 uploaded");

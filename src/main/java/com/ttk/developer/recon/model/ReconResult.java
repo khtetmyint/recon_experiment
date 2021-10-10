@@ -4,15 +4,30 @@ import java.util.List;
 
 public class ReconResult {
 
+    /**
+     * 1. Total Record Count (excluding Header; 1st row from CSV)
+     */
     int totalRecords;
+
+    /**
+     * 2. Matching Records of main file with another file
+     */
     int matchedRecords;
 
     /**
-     * {to add two count to get unmatched count}
+     * 3.
+     * {add No 4 and 5; to get unmatched count}
      */
     int unmatchedRecords;
 
+    /**
+     * 4. number of count which are not found in another file
+     */
     int notFoundInAnotherFileCount;
+
+    /**
+     * 5. number of count which are found in another file but not matched one/more values
+     */
     int foundButNotMatchInAnotherFileCount;
 
     List<String> keyListNotFoundInFileTwo;
