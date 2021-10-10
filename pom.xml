@@ -8,11 +8,11 @@
         <version>2.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>info.mvc.experience</groupId>
-    <artifactId>mvcexperience</artifactId>
+    <groupId>com.ttk.developer.recon</groupId>
+    <artifactId>recon_experiment</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>mvcexperience</name>
-    <description>mvcexperience Spring Boot</description>
+    <name>recon_experiment</name>
+    <description>Spring Boot MVC - Transaction Recon</description>
     <properties>
         <java.version>11</java.version>
     </properties>

@@ -14,13 +14,138 @@
 <body>
 <div class="container">
     <div class="section-header">
-        <p >Comparision Results:</p>
-        <p th:text="'file 1 Name: ' + ${file_one_name}" />
+        <p >Comparison Results:</p>
+<!--        <p th:text="'Csv File 1 Name: ' + ${file_one_name}" />-->
 
-        <p th:text="'file 2 Name: ' + ${file_two_name}" />
+<!--        <p th:text="'Csv File 2 Name: ' + ${file_two_name}" />-->
+        <!--display error if any-->
+        <div class="alert alert-danger" role="alert" th:if="${!reconViewResult.isComputeStatus()}">
+            <strong>Error:</strong>
+            <span th:text="${reconViewResult.getMessage()}"></span>
+        </div>
+
+        <p>Message: <span th:text="${reconViewResult.getMessage()}"></span></p>
+
+        <!--display View Results list-->
+        <div style="display: flex; justify-content: space-around">
+            <div id="summary-table-left">
+                <p>Csv File 1 : <th:block th:inline="text" th:text="${file_one_name}"></th:block></p>
+                <table  >
+                    <tr>
+                        <td><th:block th:inline="text" />Total Records:</td>
+                        <td><th:block th:inline="text" th:text="${reconViewResult.getReconResultFileOne().getTotalRecords()}"/></td>
+                    </tr>
+                    <tr>
+                        <td><th:block th:inline="text" />Matching Records:</td>
+                        <td><th:block th:inline="text" th:text="${reconViewResult.getReconResultFileOne().getMatchedRecords()}"/></td>
+                    </tr>
+                    <tr>
+                        <td><th:block th:inline="text" />Unmatched Records:</td>
+                        <td><th:block th:inline="text" th:text="${reconViewResult.getReconResultFileOne().getUnmatchedRecords()}"/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="summary-table-right">
+                <p>Csv File 2 : <th:block th:inline="text" th:text="${file_two_name}"></th:block></p>
+                <table  >
+                    <tr>
+                        <td>Total Records:</td>
+                        <td><th:block th:inline="text" th:text="${reconViewResult.getReconResultFileTwo().getTotalRecords()}"/></td>
+                    </tr>
+                    <tr>
+                        <td>Matching Records:</td>
+                        <td><th:block th:inline="text" th:text="${reconViewResult.getReconResultFileTwo().getMatchedRecords()}"/></td>
+                    </tr>
+                    <tr>
+                        <td>Unmatched Records:</td>
+                        <td><th:block th:inline="text" th:text="${reconViewResult.getReconResultFileTwo().getUnmatchedRecords()}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
     </div>
+
+
 </div>
+
+<div class="content">
+    <button th:id="report-button" style="align-content: center;border-radius: 5px;" th:inline="text">
+        <span>Unmatched Report</span>
+
+    </button>
+</div>
+<div id="unmatched-report" style="display: none; opacity: 0">
+    <!--    <div style="align-content: center">-->
+    <!--        <p style="align-content: center">Unmatched Report Result</p>-->
+    <!--    </div>-->
+
+    <div style="display: flex; justify-content: space-around">
+        <div id="div-table-left">
+            <table  id="report-table-left">
+                <thead>
+                <tr>
+                    <th scope="col" >#</th>
+                    <th scope="col" >Date</th>
+                    <th scope="col" >Reference</th>
+                    <th scope="col" >Amount</th>
+                    <th scope="col" >Remarks</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user, i : ${users}" form-group="true">
+                    <th scope="row" th:text="${i.index + 1}"></th>
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.countryCode}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="div-table-right">
+            <table  id="report-table-right">
+                <thead>
+                <tr>
+                    <th scope="col" >#</th>
+                    <th scope="col" >Date</th>
+                    <th scope="col" >Reference</th>
+                    <th scope="col" >Amount</th>
+                    <th scope="col" >Remarks</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user, i : ${users}" form-group="true">
+                    <th scope="row" th:text="${i.index + 1}"></th>
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.countryCode}"></td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" >
+    const targetDiv = document.getElementById("unmatched-report");
+    const btn = document.getElementById("report-button");
+    btn.onclick = function () {
+        if (targetDiv.style.display !== "none") {
+            targetDiv.style.display = "none";
+            targetDiv.style.opacity = 0;
+        } else {
+            targetDiv.style.display = "block";
+            targetDiv.style.opacity = 1;
+        }
+    };
+
+</script>
+
 </body>
 
 </html>

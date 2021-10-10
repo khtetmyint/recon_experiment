@@ -1,6 +1,8 @@
 package com.ttk.developer.recon.controller;
 
-import com.ttk.developer.recon.utility.CsvParserSimple;
+import com.ttk.developer.recon.model.ReconViewResult;
+import com.ttk.developer.recon.model.User;
+import com.ttk.developer.recon.service.CsvTransactionReconService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,27 +26,54 @@ public class ReconciliationController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReconciliationController.class);
 
-//    @GetMapping("/")
-//    public String index() {
-//        return "index";
-//    }
+
+    private final CsvTransactionReconService csvTransactionReconService;
+
+    /**
+     * Autowiring by Constructor
+     * @param csvTransactionReconService
+     */
+    public ReconciliationController(CsvTransactionReconService csvTransactionReconService) {
+        this.csvTransactionReconService = csvTransactionReconService;
+    }
 
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
-    public String index() {
+    public String index(Model model) {
+
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            User user = new User();
+            user.setId(i);
+            user.setName("Name_"+i);
+            user.setEmail("Email_"+i+"@example.com");
+            user.setCountryCode("Country_"+i);
+            users.add(user);
+        }
+
+        model.addAttribute("users", users);
+
 
         return "index"; // index.html
     }
 
+    //////
+
+    /////
+
     @PostMapping("/")
     public String processReconcile(@RequestParam(value = "file1") MultipartFile file1,
                                    @RequestParam(value = "file2") MultipartFile file2,
-                                   Model model) throws Exception {
-        logger.info("Upload Csv method: File1 = {}", file1.getOriginalFilename());
-        logger.info("Upload Csv method: File2 = {}", file2.getOriginalFilename());
+                                   Model model)  {
+        logger.info("Received Csv File1 ={} to reconcile with another Csv File2 ={}",
+                file1.getOriginalFilename(),
+                file2.getOriginalFilename());
+        ReconViewResult reconViewResult = csvTransactionReconService.processAndReconcileFiles(file1, file2);
 
+        logger.info("View Result={}", reconViewResult.toString());
         model.addAttribute("file_one_name", file1.getOriginalFilename());
         model.addAttribute("file_two_name", file2.getOriginalFilename());
-
+        model.addAttribute("reconViewResult", reconViewResult);
+        model.addAttribute("computeStatus", reconViewResult.isComputeStatus());
 //        if (file.isEmpty()) {
 //            model.addAttribute("message", "Please select a CSV file to upload.");
 //            model.addAttribute("status", false);
@@ -71,12 +100,24 @@ public class ReconciliationController {
 
 
 //        return "redirect:/";
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            User user = new User();
+            user.setId(i);
+            user.setName("Name_"+i);
+            user.setEmail("Email_"+i+"@example.com");
+            user.setCountryCode("Country_"+i);
+            users.add(user);
+        }
+
+        model.addAttribute("users", users);
+
         return "result";
 
     }
 
-    @GetMapping("/result")
-    public String result(){
-        return "result";
-    }
+//    @GetMapping("/result")
+//    public String result(){
+//        return "result";
+//    }
 }

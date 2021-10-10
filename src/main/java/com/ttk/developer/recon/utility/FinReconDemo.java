@@ -56,20 +56,20 @@ public class FinReconDemo {
         return result;
     };
 
-    public static void main(String[] args) {
-        //Upstream order
-        List<Map> re = new ArrayList();
-        //Local order
-        List<Map> lo = new ArrayList();
-
-        /**
-         * No, let's pretend they have millions of data.
-         */
-
-        System.out.println("Reconciliation begins");
-        Map map = diff.apply(re, lo);
-        System.out.println("Reconciliation completion");
-        System.out.println("Reconciliation result" + map);
-
-    }
+//    public static void main(String[] args) {
+//        //Upstream order
+//        List<Map> re = new ArrayList();
+//        //Local order
+//        List<Map> lo = new ArrayList();
+//
+//        /**
+//         * No, let's pretend they have millions of data.
+//         */
+//
+//        System.out.println("Reconciliation begins");
+//        Map map = diff.apply(re, lo);
+//        System.out.println("Reconciliation completion");
+//        System.out.println("Reconciliation result" + map);
+//
+//    }
 }

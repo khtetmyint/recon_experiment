@@ -22,6 +22,8 @@ import java.util.stream.Stream;
  * another double quote.  For example:
  * <p>
  * "aaa","b""bb","ccc"
+ *
+ * @kaung : copy from https://mkyong.com/java/how-to-read-and-parse-csv-file-in-java/
  */
 
 public class CsvParserSimple {
@@ -35,7 +37,7 @@ public class CsvParserSimple {
     private String pendingField = "";
     private String[] pendingFieldLine = new String[]{};
 
-    public static void main(String[] args) throws Exception {
+//    public static void main(String[] args) throws Exception {
 
         //URL resource = CsvParserSimple.class.getClassLoader().getResource("csv/wikipedia.csv");
 
@@ -81,7 +83,7 @@ public class CsvParserSimple {
 
         //multiValueMap.computeIfPresent()
 
-    }
+//    }
     ////////////////////////////////////
     public List<String[]> readAsMultipartFile(MultipartFile csvFile) throws Exception {
         return readAsMultipartFile(csvFile, 0);

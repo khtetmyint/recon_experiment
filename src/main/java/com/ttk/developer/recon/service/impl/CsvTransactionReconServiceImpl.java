@@ -1,34 +1,59 @@
-package com.ttk.developer.recon.utility;
+package com.ttk.developer.recon.service.impl;
 
+import com.ttk.developer.recon.controller.ReconciliationController;
 import com.ttk.developer.recon.model.CompareResult;
 import com.ttk.developer.recon.model.CsvRecord;
 import com.ttk.developer.recon.model.ReconResult;
+import com.ttk.developer.recon.model.ReconViewResult;
+import com.ttk.developer.recon.service.CsvTransactionReconService;
+import com.ttk.developer.recon.utility.CsvParserSimple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ComputationTest {
-    private static final Logger logger = LoggerFactory.getLogger(ComputationTest.class);
+@Service
+public class CsvTransactionReconServiceImpl implements CsvTransactionReconService {
+    private static final Logger logger = LoggerFactory.getLogger(CsvTransactionReconServiceImpl.class);
 
     static final String LOAD_CSV_FILENAME_ONE = "file_one.csv";
     static final String LOAD_CSV_FILENAME_TWO = "file_two.csv";
 
     static final String COMPARE_KEY = "TransactionID";
 
-    public static void main(String[] args) throws Exception {
+    @Override
+    public ReconViewResult processAndReconcileFiles(MultipartFile file1, MultipartFile file2) {
+        logger.info("Inside Recon Service Implementation: File1={} to reconcile with another File2={}",
+                file1.getOriginalFilename(),
+                file2.getOriginalFilename());
+        try {
+            ReconResult reconResultFileOne = compareFileOneAgainstFileTwo(file1, file2, false);
 
-//        ReconResult reconResultFileOne = compareFileOneAgainstFileTwo(LOAD_CSV_FILENAME_ONE, LOAD_CSV_FILENAME_TWO, true);
-//        ReconResult reconResultFileTwo = compareFileOneAgainstFileTwo(LOAD_CSV_FILENAME_TWO, LOAD_CSV_FILENAME_ONE, true);
+            ReconResult reconResultFileTwo = compareFileOneAgainstFileTwo(file2, file1, true);
+
+            ReconViewResult reconViewResult =  new ReconViewResult();
+            reconViewResult.setComputeStatus(true);
+            reconViewResult.setMessage("processed");
+            reconViewResult.setReconResultFileOne(reconResultFileOne);
+            reconViewResult.setReconResultFileTwo(reconResultFileTwo);
+            return reconViewResult;
+
+        } catch (Exception e) {
+            logger.error("Error while processing recon", e);
+            return new ReconViewResult(false, "Encountered Error:" + e.getMessage());
+        }
 
     }
 
-    static private ReconResult compareFileOneAgainstFileTwo(final String local_file_one, final String local_file_two, boolean isLocal) throws Exception {
-        final List<CsvRecord> fileOneCsvRecordList = convertToCsvRecordList(local_file_one);
-        final List<CsvRecord> fileTwoCsvRecordList = convertToCsvRecordList(local_file_two);
+
+    static private ReconResult compareFileOneAgainstFileTwo(final MultipartFile file1, final MultipartFile file2, boolean isLocalTest) throws Exception {
+        final List<CsvRecord> fileOneCsvRecordList = convertToCsvRecordList(file1);
+        final List<CsvRecord> fileTwoCsvRecordList = convertToCsvRecordList(file2);
 
         final Map<String, List<CsvRecord>> fileOneRecordMap = getIntoRecordMap(fileOneCsvRecordList);
         final Map<String, List<CsvRecord>> fileTwoRecordMap = getIntoRecordMap(fileTwoCsvRecordList);
@@ -199,13 +224,13 @@ public class ComputationTest {
         return result;
     }
 
-    static private List<CsvRecord> convertToCsvRecordList(String localFilePath) throws Exception {
-        //Testing with Local file
-        logger.info("Receiving request to Load and Convert Filename={}",localFilePath);
-        File file = Paths.get(localFilePath).toFile();
-        CsvParserSimple obj = new CsvParserSimple();
-        //Read As Local file
-        List<String[]> result = obj.readFile(file);
+    static private List<CsvRecord> convertToCsvRecordList(MultipartFile file) throws Exception {
+        //
+        //logger.info("Receiving request to Load and Convert Filename={}",localFilePath);
+
+        CsvParserSimple csvParserSimple = new CsvParserSimple();
+        //
+        List<String[]> result = csvParserSimple.readAsMultipartFile(file);
 
         Map<String, Integer> headerMap = new LinkedHashMap<>();
         List<CsvRecord> csvRecordList = new ArrayList<>();

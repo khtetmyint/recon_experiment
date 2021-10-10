@@ -1,6 +1,16 @@
 
 .container {
     background-color: #e1ebf6;
+    width: 100%;
+}
+
+.content {
+    width: 100%;
+
+    text-align: center;
+    margin: 0 auto;
+    flex: border-box;
+    padding: 0.2em 0em 0.2em;
 }
 
 .section-header {
@@ -19,3 +29,34 @@
     flex-grow: 0;
     text-align: left;
 }
+
+th, td {
+    padding: 5px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+/*
+
+.flexbox {
+    display: -ms-flex;
+    display: -webkit-flex;
+    display: flex;
+    width: 100%;
+    overflow: auto;
+}
+
+.left {
+    background: #f1e5e6;
+    padding: 1.25rem 1.25rem;
+    min-width: 50%;
+    flex-grow: 0;
+    text-align: left;
+}
+
+.right {
+    background: #f1e5e6;
+    padding: 1.25rem 1.25rem;
+    flex-grow: 1;
+    text-align: right;
+}*/
