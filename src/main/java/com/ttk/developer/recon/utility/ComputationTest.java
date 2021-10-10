@@ -40,6 +40,8 @@ public class ComputationTest {
         int FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT = 0;
         List<String> KEY_LIST_NOT_FOUND_IN_FILE_TWO = new ArrayList<>();
 
+        List<String> nonUniqueKeyListMatch = new ArrayList<>();
+
         List<String> nonUniqueKeyListfoundNotMatch = new ArrayList<>();
 
         FILE_ONE_TOTAL_RECORD_COUNT = fileOneCsvRecordList.size()-1;
@@ -68,7 +70,8 @@ public class ComputationTest {
                             nonUniqueKeyListfoundNotMatch.add(key);
 
                         } else {
-                            FILE_ONE_MATCHED_COUNT++;
+                            nonUniqueKeyListMatch.add(key);
+                            //FILE_ONE_MATCHED_COUNT++;
                         }
                     }
                     /////
@@ -108,7 +111,11 @@ public class ComputationTest {
 //            logger.info("{}={}, CsvRecord Per Key={}",COMPARE_KEY, key, listOfCsvRecord.size());
 //        });
 
-
+        FILE_ONE_MATCHED_COUNT =
+                (int) nonUniqueKeyListMatch
+                        .stream()
+                        .distinct()
+                        .count();
 
         List<String> KEY_LIST_FOUND_IN_FILE_TWO_BUT_NOT_MATCH = nonUniqueKeyListfoundNotMatch
                 .stream()
@@ -143,7 +150,7 @@ public class ComputationTest {
 
         reconResult.setMatchedRecords(FILE_ONE_MATCHED_COUNT) ;
 
-        reconResult.setUnmatchedRecords(FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT + FILE_ONE_FOUND_IN_FILE_TWO_BUT_UNMATCH_COUNT) ;
+        reconResult.setUnmatchedRecords(FILE_ONE_TOTAL_RECORD_COUNT - FILE_ONE_MATCHED_COUNT) ;
 
         reconResult.setNotFoundInAnotherFileCount(FILE_ONE_NOT_FOUND_IN_FILE_TWO_COUNT) ;
 

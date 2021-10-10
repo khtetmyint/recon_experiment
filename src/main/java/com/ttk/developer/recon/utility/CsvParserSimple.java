@@ -37,54 +37,14 @@ public class CsvParserSimple {
     private String pendingField = "";
     private String[] pendingFieldLine = new String[]{};
 
-//    public static void main(String[] args) throws Exception {
 
-        //URL resource = CsvParserSimple.class.getClassLoader().getResource("csv/wikipedia.csv");
-
-        // Loads file from resources folder
-//        URL resource = CsvParserSimple.class.getClassLoader().getResource("csv/monitor.csv");
-//        File file = Paths.get(resource.toURI()).toFile();
-//
-//        CsvParserSimple obj = new CsvParserSimple();
-//        List<String[]> result = obj.readFile(file, 1);
-//
-//        int listIndex = 0;
-//        for (String[] arrays : result) {
-//            System.out.println("\nString[" + listIndex++ + "] : " + Arrays.toString(arrays));
-//
-//            int index = 0;
-//            for (String array : arrays) {
-//                System.out.println(index++ + " : " + array);
-//            }
-//
-//        }
-
-//        MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-//        multiValueMap.add("A", "aStr");
-//        multiValueMap.add("A", "aAStr");
-//        multiValueMap.add("B", "bStr");
-//        multiValueMap.add("B", "bBStr");
-//        multiValueMap.add("B", "bBBStr");
-//        System.out.println("multiValueMap="+multiValueMap);
-//
-//
-//        String[] strArr = {"A","A","B","B","B"};
-//        List<String> stringList = Arrays.asList(strArr);
-//
-//        Map<String, List<String>> ordinaryMap = stringList
-//                .stream()
-//                .collect(Collectors.groupingBy(s -> s.toString(), Collectors.toList()));
-//
-//        System.out.println("ordinaryMap="+ordinaryMap);
-//
-//        MultiValueMap<String, String> stringStringMultiValueMap = CollectionUtils.toMultiValueMap(ordinaryMap);
-//
-//        System.out.println("stringStringMultiValueMap="+stringStringMultiValueMap);
-
-        //multiValueMap.computeIfPresent()
-
-//    }
-    ////////////////////////////////////
+    /**
+     * Read CSV file from Start Row (including HEADERS)
+     *
+     * @param csvFile from Request ;;;
+     * @return
+     * @throws Exception
+     */
     public List<String[]> readAsMultipartFile(MultipartFile csvFile) throws Exception {
         return readAsMultipartFile(csvFile, 0);
     }

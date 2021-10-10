@@ -1,6 +1,6 @@
 package com.ttk.developer.recon.service.impl;
 
-import com.ttk.developer.recon.controller.ReconciliationController;
+
 import com.ttk.developer.recon.model.CompareResult;
 import com.ttk.developer.recon.model.CsvRecord;
 import com.ttk.developer.recon.model.ReconResult;
@@ -9,11 +9,14 @@ import com.ttk.developer.recon.service.CsvTransactionReconService;
 import com.ttk.developer.recon.utility.CsvParserSimple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.nio.file.Paths;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,13 +27,21 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
     static final String LOAD_CSV_FILENAME_ONE = "file_one.csv";
     static final String LOAD_CSV_FILENAME_TWO = "file_two.csv";
 
+    @Value("${compare.key}")
     static final String COMPARE_KEY = "TransactionID";
 
     @Override
     public ReconViewResult processAndReconcileFiles(MultipartFile file1, MultipartFile file2) {
-        logger.info("Inside Recon Service Implementation: File1={} to reconcile with another File2={}",
-                file1.getOriginalFilename(),
-                file2.getOriginalFilename());
+        logger.info("Inside Reconciliation Service Implementation");
+        if(file1 == null || !file1.getOriginalFilename().endsWith(".csv")){
+            String message = "Invalid File. Only .csv format supported";
+            throw new IllegalArgumentException(message);
+        }
+        if(file2 == null || !file2.getOriginalFilename().endsWith(".csv")){
+            String message = "Invalid File. Only .csv format supported";
+            throw new IllegalArgumentException(message);
+        }
+
         try {
             ReconResult reconResultFileOne = compareFileOneAgainstFileTwo(file1, file2, false);
 
@@ -45,11 +56,20 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
 
         } catch (Exception e) {
             logger.error("Error while processing recon", e);
-            return new ReconViewResult(false, "Encountered Error:" + e.getMessage());
+            //return new ReconViewResult(false, "Encountered Error:" + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage(), e);
         }
 
     }
 
+    /**
+     *
+     * @param file1 ; Main file (left side) to compare with Another file (right side)
+     * @param file2 ; Another file to be compared against Main file
+     * @param isLocalTest ; unused param
+     * @return
+     * @throws Exception
+     */
 
     static private ReconResult compareFileOneAgainstFileTwo(final MultipartFile file1, final MultipartFile file2, boolean isLocalTest) throws Exception {
         final List<CsvRecord> fileOneCsvRecordList = convertToCsvRecordList(file1);
@@ -71,7 +91,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
 
         FILE_ONE_TOTAL_RECORD_COUNT = fileOneCsvRecordList.size()-1;
 
-
+        //this list to be used for "unmatched report" at UI
         List<CompareResult> COMPARE_RESULT_LIST = new ArrayList<>();
         for (String key : fileOneRecordMap.keySet()) {
 
@@ -197,6 +217,15 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
         return reconResult;
     }
 
+    /**
+     * Comparing one record from Main file with one from Another file
+     * output: result, which contained necessary info
+     * @param one
+     * @param two
+     * @param key
+     * @return
+     * @see CompareResult
+     */
     static private CompareResult compareTwoCsvRecords(CsvRecord one, CsvRecord two, String key){
 
 
@@ -241,9 +270,19 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
         return result;
     }
 
+    /**
+     * This is intermediate converter method only
+     * From
+     * input: CSV Raw File ->
+     * output: CsvRecords List
+     * @param file
+     * @return
+     * @see List<CsvRecord>
+     * @throws Exception
+     */
     static private List<CsvRecord> convertToCsvRecordList(MultipartFile file) throws Exception {
         //
-        //logger.info("Receiving request to Load and Convert Filename={}",localFilePath);
+
 
         CsvParserSimple csvParserSimple = new CsvParserSimple();
         //
@@ -262,13 +301,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
 
             CsvRecord csvRecord = new CsvRecord(rowIndex, headerMap, Arrays.asList(arrays));
             csvRecordList.add(csvRecord);
-//            System.out.println("\nString[" + rowIndex + "] : " + Arrays.toString(arrays));
-//
-//            int index = 0;
-//            for (String array : arrays) {
-//                System.out.println(index++ + " : " + array);
-//            }
-            //INCREMENT to next row record
+
             rowIndex++;
 
         }
@@ -279,15 +312,20 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
         return csvRecordList;
     }
 
-    static private Map<String, List<CsvRecord>> getIntoRecordMap(List<CsvRecord> csvRecordList) throws Exception {
+    /**
+     * This method covert from List to Map
+     *
+     * CSV Raw File ->
+     * input: csvRecordList ->
+     * output:
+     * Map with key = Main ID of the record; which is configurable via properties file
+     * Map value = list of Csv Record "group by" ID
+     * @param csvRecordList
+     * @return
+     */
 
+    static private Map<String, List<CsvRecord>> getIntoRecordMap(List<CsvRecord> csvRecordList) {
 
-//        for (CsvRecord csvRecord : csvRecordList) {
-//            csvRecord.getDataByHeader();
-//            logger.info("Row:{}", csvRecord.getRowNumber());
-//            csvRecord.convertToTransaction().getValuesHolder().forEach((k,v)->logger.info("{}={}", k,v));
-//            csvRecord.getTransaction().forEach((k,v)->logger.info("{}={}", k,v));
-//        }
 
         Map<String, List<CsvRecord>> csvRecordMap = csvRecordList
                 .stream()
