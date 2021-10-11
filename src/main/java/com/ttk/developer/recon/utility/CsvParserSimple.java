@@ -37,6 +37,36 @@ public class CsvParserSimple {
     private String pendingField = "";
     private String[] pendingFieldLine = new String[]{};
 
+    /**
+     * Read Headers Row only (must be first row in csv)
+     * LATER to compare , validate against pre-defined HEADERS
+     * Must match ...
+     * @param csvFile
+     * @return
+     * @throws Exception
+     */
+
+    public List<String[]> readHeadersOnlyMultipartFile(MultipartFile csvFile) throws Exception {
+        InputStream inputStream = csvFile.getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        List<String[]> headersResult = new ArrayList<>();
+        int indexLine = 1;
+        try (BufferedReader br = new BufferedReader(inputStreamReader)) {
+            String line;
+            while ((line = br.readLine()) != null) {
+
+                if (indexLine>1) break;
+
+                String[] csvLineInArray = parseLine(line);
+
+                headersResult.add(csvLineInArray);
+
+                indexLine++;
+            }
+        }
+
+        return headersResult;
+    }
 
     /**
      * Read CSV file from Start Row (including HEADERS)
@@ -88,46 +118,46 @@ public class CsvParserSimple {
     }
     //////////////////////////////////////// end of Multipart file reading ///////////////////////////
 
-    public List<String[]> readFile(File csvFile) throws Exception {
-        return readFile(csvFile, 0);
-    }
-
-    public List<String[]> readFile(File csvFile, int skipLine) throws Exception {
-
-        List<String[]> result = new ArrayList<>();
-        int indexLine = 1;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-
-            String line;
-            while ((line = br.readLine()) != null) {
-
-                if (indexLine++ <= skipLine) {
-                    continue;
-                }
-
-                String[] csvLineInArray = parseLine(line);
-
-                if (isMultiLine) {
-                    pendingFieldLine = joinArrays(pendingFieldLine, csvLineInArray);
-                } else {
-
-                    if (pendingFieldLine != null && pendingFieldLine.length > 0) {
-                        // joins all fields and add to list
-                        result.add(joinArrays(pendingFieldLine, csvLineInArray));
-                        pendingFieldLine = new String[]{};
-                    } else {
-                        // if dun want to support multiline, only this line is required.
-                        result.add(csvLineInArray);
-                    }
-
-                }
-
-            }
-        }
-
-        return result;
-    }
+//    public List<String[]> readFile(File csvFile) throws Exception {
+//        return readFile(csvFile, 0);
+//    }
+//
+//    public List<String[]> readFile(File csvFile, int skipLine) throws Exception {
+//
+//        List<String[]> result = new ArrayList<>();
+//        int indexLine = 1;
+//
+//        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+//
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//
+//                if (indexLine++ <= skipLine) {
+//                    continue;
+//                }
+//
+//                String[] csvLineInArray = parseLine(line);
+//
+//                if (isMultiLine) {
+//                    pendingFieldLine = joinArrays(pendingFieldLine, csvLineInArray);
+//                } else {
+//
+//                    if (pendingFieldLine != null && pendingFieldLine.length > 0) {
+//                        // joins all fields and add to list
+//                        result.add(joinArrays(pendingFieldLine, csvLineInArray));
+//                        pendingFieldLine = new String[]{};
+//                    } else {
+//                        // if dun want to support multiline, only this line is required.
+//                        result.add(csvLineInArray);
+//                    }
+//
+//                }
+//
+//            }
+//        }
+//
+//        return result;
+//    }
 
     public String[] parseLine(String line) throws Exception {
         return parseLine(line, DEFAULT_SEPARATOR);
