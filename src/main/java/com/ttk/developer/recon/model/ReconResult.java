@@ -2,6 +2,11 @@ package com.ttk.developer.recon.model;
 
 import java.util.List;
 
+/**
+ * Represent summary of reconciled result (counts) + list of unmatched result (to display in unmatched report section at view)
+ * per CSV file
+ *
+ */
 public class ReconResult {
 
     /**

@@ -1,5 +1,9 @@
 package com.ttk.developer.recon.model;
 
+/**
+ * to use in result View
+ * represent both file 1 and 2 ReconResult
+ */
 public class ReconViewResult {
 
     private ReconResult reconResultFileOne;

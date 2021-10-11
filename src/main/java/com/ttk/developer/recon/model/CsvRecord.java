@@ -4,6 +4,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * represent new record per row
+ * also set Row Number (line position at CSV file)
+ */
 public class CsvRecord {
 
     private int rowNumber;
@@ -12,6 +16,11 @@ public class CsvRecord {
     private List<String> dataValues;
 
     //Map as Transaction ;;;
+    /**
+     * instead of creating a model object
+     * chose to set each record fields/columns in map structure ;;
+     * LATER useful in traversing and matching each columns values
+     */
     private Map<String, String> transaction;
 
     public CsvRecord(int rowNumber, Map<String, Integer> headerMap, List<String> dataValues) {
@@ -60,13 +69,13 @@ public class CsvRecord {
         }
     }
 
-    private Transaction convertToTransaction(){
-        Map valuesHolder = new LinkedHashMap();
-        for (String headerKey : this.headerMap.keySet()) {
-            final Integer integer = this.headerMap.get(headerKey);
-//            System.out.println("Row:"+this.rowNumber+":"+headerKey +"="+this.dataValues.get(integer));
-            valuesHolder.put(headerKey, this.dataValues.get(integer));
-        }
-        return new Transaction(valuesHolder);
-    }
+//    private Transaction convertToTransaction(){
+//        Map valuesHolder = new LinkedHashMap();
+//        for (String headerKey : this.headerMap.keySet()) {
+//            final Integer integer = this.headerMap.get(headerKey);
+////            System.out.println("Row:"+this.rowNumber+":"+headerKey +"="+this.dataValues.get(integer));
+//            valuesHolder.put(headerKey, this.dataValues.get(integer));
+//        }
+//        return new Transaction(valuesHolder);
+//    }
 }

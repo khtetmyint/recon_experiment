@@ -2,13 +2,10 @@ package com.ttk.developer.recon.controller;
 
 import com.ttk.developer.recon.model.ReconViewResult;
 import com.ttk.developer.recon.service.CsvTransactionReconService;
-import com.ttk.developer.recon.utility.CsvParserSimple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Main Controller to handle CSV files upload, Transactions Reconciliation and Display Result operations.
@@ -75,95 +69,21 @@ public class ReconciliationController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
         }
 
-//            logger.info("1 unmatch={}, 2 unmatch={}",
-//        reconViewResult.getReconResultFileOne().getUnmatchedRecords(),
-//        reconViewResult.getReconResultFileTwo().getUnmatchedRecords());
-//        for (CompareResult compareResult : reconViewResult.getReconResultFileOne().getCompareResultList()) {
-//            logger.info("In Loop ResultFileOne:{},{},{},{},{},{}",
-//            compareResult.getMainRecord().getRowNumber(),
-//            compareResult.getRowNumberInFileOne(),
-//            compareResult.getCompareKey(),
-//            compareResult.getReason(),
-//            compareResult.getMainRecord().getTransaction().get("TransactionDate"),
-//            compareResult.getMainRecord().getTransaction().get("TransactionAmount"));
-//        }
-//
-//        for (CompareResult compareResult : reconViewResult.getReconResultFileTwo().getCompareResultList()) {
-//            logger.info("In Loop ResultFileTwo:{},{},{},{},{},{}",
-//                    compareResult.getMainRecord().getRowNumber(),
-//                    compareResult.getRowNumberInFileOne(),
-//                    compareResult.getCompareKey(),
-//                    compareResult.getReason(),
-//                    compareResult.getMainRecord().getTransaction().get("TransactionDate"),
-//                    compareResult.getMainRecord().getTransaction().get("TransactionAmount"));
-//        }
-//        if (file.isEmpty()) {
-//            model.addAttribute("message", "Please select a CSV file to upload.");
-//            model.addAttribute("status", false);
-//        } else {
-//
-//
-//            model.addAttribute("message", "CSV file1 uploaded");
-//            model.addAttribute("status", true);
-//        }
 
-
-
-//        return "redirect:/";
 
 
         return "result";
 
     }
 
-//    @GetMapping("/result")
-//    public String result(){
-//        return "result";
-//    }
-    @Value("#{${compare.headersMap}}")
-    Map<String, String> headersMap;
-
-    @PostMapping(value = "/header_only", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> headerOnlyTest(@RequestParam(value = "file") MultipartFile file){
-
-        CsvParserSimple csvParserSimple = new CsvParserSimple();
-        List<String> firstRow = new ArrayList<>();
-        boolean isContainAllHeaders = false;
-        try {
-            List<String[]> headersRow = csvParserSimple.readHeadersOnlyMultipartFile(file);
-            headersMap.forEach((k,v)->logger.info("Properties Header Key={}", k));
-            for (int i = 0; i < headersRow.size(); i++) {
-                if(i>0) break;
-                String[] headers = headersRow.get(i);
-                logger.info("Headers: {}",Arrays.asList(headers));
-                firstRow = Arrays.asList(headers);
-            }
-
-            int headerMatchCount=0;
-            for (String header : firstRow) {
-                if(!headersMap.containsKey(header)){
-                    isContainAllHeaders = false;
-                    break;
-                }
-                for (String propertiesHead : headersMap.keySet()) {
-                    if(propertiesHead.equalsIgnoreCase(header)) headerMatchCount++;
-                }
-            }
-            logger.info("headerMatchCount={}, isContainAllHeaders={}", headerMatchCount, isContainAllHeaders);
-
-            return new ResponseEntity<>( firstRow, HttpStatus.OK );
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    boolean isContainsAllHeader(String header){
-        if(!headersMap.containsKey(header)){
-            return false;
-        }
-        return true;
-    }
+    /**
+     * Instead of using Global Exception Handler with @ControllerAdvice
+     * I have opt to use ResponseStatusException and @ExceptionHandler way because only have single controller to handle
+     * Error View is not pretty and plain basic to handle/ show error
+     * @param request
+     * @param ex
+     * @return
+     */
 
     @ExceptionHandler(value = {ResponseStatusException.class, IllegalArgumentException.class,
             MultipartException.class})

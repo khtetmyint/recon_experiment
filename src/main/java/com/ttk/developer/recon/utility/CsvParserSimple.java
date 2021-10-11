@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Stream;
 
-/**
+/** Utility class to read CSV file
  * https://tools.ietf.org/html/rfc4180
  * <p>
  * Fields containing line breaks (CRLF), double quotes, and commas
@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  * <p>
  * "aaa","b""bb","ccc"
  *
- * @kaung : copy from https://mkyong.com/java/how-to-read-and-parse-csv-file-in-java/
+ * @kaung : core logic refer from https://mkyong.com/java/how-to-read-and-parse-csv-file-in-java/
  */
 
 public class CsvParserSimple {

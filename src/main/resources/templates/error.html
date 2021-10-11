@@ -9,11 +9,11 @@
 
 <h3>Debug Information:</h3>
 
-Requested URL = <p th:text="${url}"></p><br><br>
+<strong>Requested URL :</strong> <p th:text="${url}"></p><br><br>
 
-Exception Message= <p th:text="${message}" ></p><br><br>
+<strong>Exception Message :</strong> <p th:text="${message}" ></p><br><br>
 
-
+<strong><a th:href="@{/}">Back Home</a></strong> <br><br><br>
 <strong>Exception Stack Trace</strong><br>
 
 <p th:each="trace : ${exception_trace_list}" th:text="${trace}"  />

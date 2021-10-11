@@ -2,6 +2,9 @@ package com.ttk.developer.recon.model;
 
 import java.util.List;
 
+/**
+ * unmatched result (to display in unmatched report section at view)
+ */
 public class CompareResult {
 
     private String compareKey;

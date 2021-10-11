@@ -24,13 +24,64 @@ import java.util.stream.Collectors;
 public class CsvTransactionReconServiceImpl implements CsvTransactionReconService {
     private static final Logger logger = LoggerFactory.getLogger(CsvTransactionReconServiceImpl.class);
 
-    static final String LOAD_CSV_FILENAME_ONE = "file_one.csv";
-    static final String LOAD_CSV_FILENAME_TWO = "file_two.csv";
 
     @Value("${compare.key}")
     String COMPARE_KEY ;//= "TransactionID";
 
+    @Value("#{${compare.headersMap}}")
+    Map<String, String> headersMap; // set pre-defined HEADERS
 
+    /**
+     * * Read Headers row Only to compare , validate against pre-defined HEADERS
+     *      * Must match ...
+     * @param file
+     * @return
+     */
+    private boolean isContainsAllHeader(MultipartFile file)  {
+
+        CsvParserSimple csvParserSimple = new CsvParserSimple();
+        List<String> firstRow = new ArrayList<>();
+        boolean isContainAllHeaders;
+
+        List<String[]> headersRow = new ArrayList<>();
+        try {
+            headersRow = csvParserSimple.readHeadersOnlyMultipartFile(file);
+        } catch (Exception e) {
+            logger.warn("Exception During Reading Headers Only.", e);
+            return false;
+        }
+        headersMap.forEach((k,v)->logger.info("Properties Header Key={}", k));
+        for (int i = 0; i < headersRow.size(); i++) {
+            if(i>0) break;
+            String[] headersArray = headersRow.get(i);
+            logger.info("Headers: {}",Arrays.asList(headersArray));
+            firstRow = Arrays.asList(headersArray);
+        }
+
+        //int headerMatchCount=0;
+        if (firstRow.size() != headersMap.size()){
+            logger.info("Pre-defined header count not matched with loaded header count={}", firstRow.size() );
+            return false;
+        }
+        for (String header : firstRow) {
+            if(!headersMap.containsKey(header)){
+                isContainAllHeaders = false;
+                //break;
+                logger.info(" isContainAllHeaders={}",  isContainAllHeaders);
+                return false;
+            }
+
+        }
+        logger.info("I guessed File ContainAllHeaders");
+        return true;
+    }
+
+    /**
+     * Main Reconciliation process method here.
+     * @param file1
+     * @param file2
+     * @return
+     */
     @Override
     public ReconViewResult processAndReconcileFiles(MultipartFile file1, MultipartFile file2) {
         logger.info("Inside Reconciliation Service Implementation");
@@ -41,6 +92,15 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
         if(file2 == null || !file2.getOriginalFilename().endsWith(".csv")){
             String message = "Invalid File. Only .csv format supported";
             throw new IllegalArgumentException(message);
+        }
+
+        if ( !isContainsAllHeader(file1) ) {
+            String message = "%s headers do not match with pre-defined headers";
+            throw new IllegalArgumentException(String.format(message, file1.getOriginalFilename()));
+        }
+        if ( !isContainsAllHeader(file2) ) {
+            String message = "%s headers do not match with pre-defined headers";
+            throw new IllegalArgumentException(String.format(message, file2.getOriginalFilename()));
         }
 
         try {
@@ -57,7 +117,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
 
         } catch (Exception e) {
             logger.error("Error while processing recon", e);
-            //return new ReconViewResult(false, "Encountered Error:" + e.getMessage());
+
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage(), e);
         }
 
@@ -148,7 +208,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
                     result.setReason("Record Not Found in Another File");
                     result.setRowNumberInFileOne(String.valueOf(csvRecord.getRowNumber()));
                     result.setValueInFileTwo(Collections.emptyList());
-                    //Arrays.asList(new String[]{"A","B","C"})
+
                     result.setComparedHeader(Collections.emptyList());
                     COMPARE_RESULT_LIST.add(result);
                 });
@@ -156,10 +216,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
 
             }
         }
-        //System.out.println("==================================File Two - Checking Record Map=============");
-//        fileTwoRecordMap.forEach((key,listOfCsvRecord)->{
-//            logger.info("{}={}, CsvRecord Per Key={}",COMPARE_KEY, key, listOfCsvRecord.size());
-//        });
+        
 
         FILE_ONE_MATCHED_COUNT =
                 (int) nonUniqueKeyListMatch
