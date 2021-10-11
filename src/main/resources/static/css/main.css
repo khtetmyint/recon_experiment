@@ -36,27 +36,3 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 
-/*
-
-.flexbox {
-    display: -ms-flex;
-    display: -webkit-flex;
-    display: flex;
-    width: 100%;
-    overflow: auto;
-}
-
-.left {
-    background: #f1e5e6;
-    padding: 1.25rem 1.25rem;
-    min-width: 50%;
-    flex-grow: 0;
-    text-align: left;
-}
-
-.right {
-    background: #f1e5e6;
-    padding: 1.25rem 1.25rem;
-    flex-grow: 1;
-    text-align: right;
-}*/
