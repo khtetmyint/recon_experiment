@@ -28,7 +28,8 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
     static final String LOAD_CSV_FILENAME_TWO = "file_two.csv";
 
     @Value("${compare.key}")
-    static final String COMPARE_KEY = "TransactionID";
+    String COMPARE_KEY ;//= "TransactionID";
+
 
     @Override
     public ReconViewResult processAndReconcileFiles(MultipartFile file1, MultipartFile file2) {
@@ -71,7 +72,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
      * @throws Exception
      */
 
-    static private ReconResult compareFileOneAgainstFileTwo(final MultipartFile file1, final MultipartFile file2, boolean isLocalTest) throws Exception {
+    private ReconResult compareFileOneAgainstFileTwo(final MultipartFile file1, final MultipartFile file2, boolean isLocalTest) throws Exception {
         final List<CsvRecord> fileOneCsvRecordList = convertToCsvRecordList(file1);
         final List<CsvRecord> fileTwoCsvRecordList = convertToCsvRecordList(file2);
 
@@ -226,7 +227,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
      * @return
      * @see CompareResult
      */
-    static private CompareResult compareTwoCsvRecords(CsvRecord one, CsvRecord two, String key){
+    private CompareResult compareTwoCsvRecords(CsvRecord one, CsvRecord two, String key){
 
 
         CompareResult result = new CompareResult();
@@ -280,7 +281,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
      * @see List<CsvRecord>
      * @throws Exception
      */
-    static private List<CsvRecord> convertToCsvRecordList(MultipartFile file) throws Exception {
+    private List<CsvRecord> convertToCsvRecordList(MultipartFile file) throws Exception {
         //
 
 
@@ -324,7 +325,7 @@ public class CsvTransactionReconServiceImpl implements CsvTransactionReconServic
      * @return
      */
 
-    static private Map<String, List<CsvRecord>> getIntoRecordMap(List<CsvRecord> csvRecordList) {
+    private Map<String, List<CsvRecord>> getIntoRecordMap(List<CsvRecord> csvRecordList) {
 
 
         Map<String, List<CsvRecord>> csvRecordMap = csvRecordList
