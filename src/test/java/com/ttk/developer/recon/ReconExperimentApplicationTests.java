@@ -47,8 +47,12 @@ class ReconExperimentApplicationTests {
 //    void contextLoads() {
 //    }
 
+    /**
+     * Test File upload post without multipart files
+     * @throws Exception
+     */
     @Test
-    public void whenTestPost_thenVerifyResult()
+    public void whenTestPost_thenVerifyResultErrorPage()
             throws Exception {
 
 //        final String file1Content = "ProfileName,TransactionDate,TransactionAmount,TransactionNarrative,TransactionDescription,TransactionID,TransactionType,WalletReference\n" +
@@ -77,11 +81,11 @@ class ReconExperimentApplicationTests {
 //        );
 
         mockMvc.perform(post("/")
-//                .file(file1)
-//                .file(file2)
+
                 .accept(MediaType.TEXT_HTML))
-                //.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
-                .andExpect(status().isOk());
+
+                .andExpect(status().isOk())
+                .andExpect(view().name("error"));
 //                .andExpect(status().isBadRequest());
     }
 
